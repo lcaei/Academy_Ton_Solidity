@@ -13,71 +13,44 @@ pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
 
+//Import the Target smart contract
+import "app.sol";
+import "../Debot.sol";
+/*Simple input/output. Allows to print string messages to the user and get input string from the user. */
+import "../Terminal.sol";
+/*Interface for menu. */
+import "../Menu.sol";
+/*Allows to input smart contract address. */
+import "../AddressInput.sol";
+/*Interface for confirm input. */
+import "../ConfirmInput.sol";
+/*Allows the update of code */
+import "../Upgradable.sol";
+/*Builtin Interface that covers subset of TON SDK functions. Implemented by DEngine. */
+import "../Sdk.sol";
+import "../Transferable.sol";
+/*Interface for amount input. */
+import "../AmountInput.sol";
+import "../UserInfo.sol";
+/*Interface for getting signing box which can be used to sign external messages and other arbitrary 
+data by handle without accessing the keys directly.*/
+import "../SigningBoxInput.sol";
+/*Allows to manage security card. */
+import "../SecurityCardManagement.sol";
+/*Allows to scan qrcode and return its data as string. */
+import "../QRCode.sol";
+/*Interface for number input. */
+import "../NumberInput.sol";
+/*Interface for creating new encryption box that can encrypt/decrypt data using defined crypto algorithm. */
+import "../EncryptionBoxInput.sol";
+/*Allows to input date and time. */
+import "../DateTimeInput.sol";
+/*Allows you to input the country code (ISO 3166-1 alpha-2) and customize the list of countries. */
+import "../CountryInput.sol";
+
 
 contract App{
-        //store debot icon data
-        byte m_icon;
-        uint256 m_ownerPubkey;
-        
-        modifier onlyOwner() {
-            require(msg.pubkey() == m_ownerPubkey, 101);
-            _;
-        }
-
-
-        constructor( uint256 pubkey) public {
-            require(pubkey != 0, 120);
-            tvm.accept();
-            m_ownerPubkey = pubkey;
-        }
-
-    //Entry point for test functions
-
-    uint128 P_count;
-
-    struct Person{
-        uint PID;
-        string fname;
-        string lname;
-        address Paddress;
-        }
-
-    mapping(uint256 => Person) public persons;
-
-    function createPerson(string fname, string lname, address Paddress) public onlyOwner {
-        tvm.accept();
-        P_count++;
-        persons[P_count]=Person(P_count, fname, lname, Paddress);
-    }
-
-    function deletePerson(uint PID) public onlyOwner {
-        require(persons.exists(PID), 102);
-        tvm.accept();
-        delete persons[PID];
-    }
-
-    function send_gram(address Paddress, uint64 amount, bool bounce) pure public {
-        tvm.accept();
-        Paddress.transfer(amount,  bounce);
-    }
-
-    onBounce (TvmSlice body) pure external {
-        require(body.bits()==0);
-    }
-
-    function getPerson() public view returns (Person[] mpersons){
-        string fname;
-        string lname;
-        address Paddress;
-
-        for ((uint PID, Person sperson): persons){
-            fname=sperson.fname;
-            lname=sperson.lname;
-            Paddress = sperson.Paddress;
-            mpersons.push(Person(PID, fname, lname, Paddress));
-        }
-    }
-
+ 
 
     //Entry Point for the DeBot
 
